@@ -1,0 +1,15 @@
+# General
+node_modules/
+.env
+.DS_Store
+.vscode/
+
+# Frontend (React)
+/frontend/build/
+/frontend/dist/
+
+# Backend (Node)
+/backend/npm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+/backend/uploads/
