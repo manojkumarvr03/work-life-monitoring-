@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../services/api";
+import { API_URL } from "../../services/api";
 import "../../styles/auth.css";
 
 const FEATURES = [
@@ -18,6 +18,8 @@ const Login = () => {
   const [activeFeature, setActiveFeature] = useState(0);
   const navigate = useNavigate();
 
+  console.log("API:", API_URL);
+
   // Rotate featured highlights
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,11 +33,24 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      const res = await loginUser({ email, password });
-      localStorage.setItem("token", res.data.token);
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed. Please try again.");
+      }
+
+      localStorage.setItem("token", data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }

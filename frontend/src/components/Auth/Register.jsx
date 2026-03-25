@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../services/api";
+import { API_URL } from "../../services/api";
 import "../../styles/auth.css";
 
 const Register = () => {
@@ -9,6 +9,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  console.log("API:", API_URL);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -39,10 +41,23 @@ const Register = () => {
     setError("");
     setLoading(true);
     try {
-      await registerUser(form);
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
       navigate("/");
     } catch (err) {
-      const message = err.response?.data?.message || "Registration failed";
+      const message = err.message || "Registration failed";
       setError(message);
       if (message.toLowerCase().includes("already")) {
         setTimeout(() => navigate("/"), 2000);
