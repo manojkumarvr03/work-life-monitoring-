@@ -24,19 +24,8 @@ import WorkLifeChart from "../../components/Analytics/WorkLifeChart";
 
 import "../../styles/dashboard.css";
 
-const QUOTES = [
-  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
-  { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
-  { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-  { text: "Education is the most powerful weapon you can use to change the world.", author: "Nelson Mandela" },
-  { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
-  { text: "Great things never come from comfort zones.", author: "Unknown" },
-  { text: "Dream it. Wish it. Do it.", author: "Unknown" },
-];
-
 /* ===================================================
-   SMART SUGGESTION ENGINE
-   Generates personalized suggestions based on user data
+   SMART SUGGESTIONS ENGINE
    =================================================== */
 const generateSuggestions = (today, weeklyAnalytics, balance) => {
   const suggestions = [];
@@ -129,7 +118,6 @@ const Dashboard = () => {
   const [activities, setActivities] = useState([]);
   const [showAllSuggestions, setShowAllSuggestions] = useState(false);
 
-  const quote = QUOTES[new Date().getDay() % QUOTES.length];
   const greeting = () => {
     const hr = new Date().getHours();
     if (hr < 12) return "Good Morning";
@@ -208,14 +196,6 @@ const Dashboard = () => {
           {greeting()}{user ? `, ${user.name || user.user?.name}` : ""}
         </h1>
         <p style={{ fontSize: '16px', opacity: 0.9 }}>Your academic work-life balance insights are analyzed and ready.</p>
-        <div className="quote-box-dashboard" style={{ marginTop: '16px', padding: '12px 20px', background: 'rgba(255,255,255,0.4)', borderRadius: '12px', borderLeft: '4px solid var(--accent-primary)', maxWidth: 'fit-content' }}>
-          <span style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--text-secondary)' }}>
-            "{quote.text}"
-          </span>
-          <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', marginLeft: '10px' }}>
-            — {quote.author}
-          </span>
-        </div>
       </motion.div>
 
       {/* TOP METRICS */}
