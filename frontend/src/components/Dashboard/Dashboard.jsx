@@ -141,14 +141,15 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const [userRes, progressRes, todayRes, weeklyRes, balanceRes, activitiesRes] = await Promise.all([
-          API.get("/auth/profile"),
-          API.get("/analysis/progress"),
-          API.get("/analysis/today"),
-          API.get("/analysis/weekly"),
-          API.get("/analysis/balance"),
-          API.get("/activities"),
+          API.get("/api/auth/profile"),
+          API.get("/api/analysis/progress"),
+          API.get("/api/analysis/today"),
+          API.get("/api/analysis/weekly"),
+          API.get("/api/analysis/balance"),
+          API.get("/api/activities"),
         ]);
-        setUser(userRes.data);
+        const userData = userRes.data;
+        setUser(userData);
         setProgress(progressRes.data);
         setToday(todayRes.data);
         setWeeklyAnalytics(weeklyRes.data);
@@ -163,6 +164,10 @@ const Dashboard = () => {
             stressLevel: todayRes.data.stressLevel || 5
           }));
         }
+
+        // Handle case where profile name is nested differently
+        const userName = userData.name || userData.user?.name || "";
+        if (userName) setUser(userData);
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
       }

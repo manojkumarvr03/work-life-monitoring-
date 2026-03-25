@@ -155,11 +155,11 @@ const Reports = () => {
       const endISO = end.toISOString();
 
       const [summaryRes, weeklyRes, datesRes, todayRes, profileRes] = await Promise.all([
-        API.get(`/reports/summary?startDate=${startISO}&endDate=${endISO}`),
-        API.get(`/reports/weekly?startDate=${startISO}&endDate=${endISO}`),
-        API.get("/reports/activity-dates"),
-        API.get(`/analysis/today?date=${selectedDate.toISOString()}`),
-        API.get("/auth/profile"),
+        API.get(`/api/reports/summary?startDate=${startISO}&endDate=${endISO}`),
+        API.get(`/api/reports/weekly?startDate=${startISO}&endDate=${endISO}`),
+        API.get("/api/reports/activity-dates"),
+        API.get(`/api/analysis/today?date=${selectedDate.toISOString()}`),
+        API.get("/api/auth/profile"),
       ]);
 
       setSummary(summaryRes.data);

@@ -51,9 +51,9 @@ const InsightsPage = () => {
             try {
                 setLoading(true);
                 const [balRes, monthRes, weekRes] = await Promise.all([
-                    API.get("/analysis/balance"),
-                    API.get("/reports/monthly"),
-                    API.get("/reports/weekly"),
+                    API.get("/api/analysis/balance"),
+                    API.get("/api/reports/monthly"),
+                    API.get("/api/reports/weekly"),
                 ]);
                 setBalance(balRes.data);
                 setMonthly(monthRes.data);
