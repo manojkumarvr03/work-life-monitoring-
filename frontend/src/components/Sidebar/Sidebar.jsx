@@ -8,8 +8,7 @@ import {
   BarChart3, 
   User, 
   LogOut,
-  GraduationCap,
-  AlarmClock
+  GraduationCap
 } from "lucide-react";
 import API from "../../services/api";
 import "./sidebar.css";
@@ -61,7 +60,6 @@ const Sidebar = () => {
   const navItems = [
     { to: "/dashboard", icon: <LayoutDashboard size={20} />, label: "Dashboard", badge: null },
     { to: "/tracker", icon: <ClipboardList size={20} />, label: "Activity Tracker", badge: null },
-    { to: "/dashboard", icon: <AlarmClock size={20} color="#f43f5e" />, label: "Alarms", badge: null }, // Visually match the target
     { to: "/schedule", icon: <Calendar size={20} />, label: "Schedule", badge: null },
     { to: "/insights", icon: <Lightbulb size={20} />, label: "Insights", badge: null },
     { to: "/reports", icon: <BarChart3 size={20} />, label: "Reports", badge: null },
