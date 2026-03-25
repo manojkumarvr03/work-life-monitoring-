@@ -13,7 +13,6 @@ import {
   Zap, 
   Star, 
   LayoutDashboard,
-  Calendar,
   BarChart3
 } from "lucide-react";
 import Sidebar from "../components/Sidebar/Sidebar";

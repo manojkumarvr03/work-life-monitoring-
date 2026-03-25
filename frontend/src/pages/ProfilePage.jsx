@@ -19,15 +19,13 @@ import {
   Sparkles,
   ShieldCheck,
   Activity,
-  History,
   Inbox,
   Trash2,
   Briefcase,
   ClipboardList,
   GraduationCap,
   Droplets,
-  Scroll,
-  Timer
+  Scroll
 } from "lucide-react";
 import ProfileEditModal from "../components/Profile/ProfileEditModal";
 import "../styles/profile.css";
