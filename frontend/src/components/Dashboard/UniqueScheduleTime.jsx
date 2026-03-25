@@ -20,8 +20,8 @@ const UniqueScheduleTime = () => {
       const today = new Date().toISOString().split('T')[0];
       
       const [scheduleRes, plannerRes] = await Promise.all([
-        API.get(`/schedules?date=${today}`),
-        API.get(`/planner/sessions?date=${today}`)
+        API.get(`/api/schedules?date=${today}`),
+        API.get(`/api/planner/sessions?date=${today}`)
       ]);
 
       const now = new Date();

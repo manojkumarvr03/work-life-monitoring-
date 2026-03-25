@@ -60,8 +60,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const profileRes = await API.get("/auth/profile");
-        const activityRes = await API.get("/activities");
+        const profileRes = await API.get("/api/auth/profile");
+        const activityRes = await API.get("/api/activities");
         setProfile(profileRes.data);
         setActivities(activityRes.data);
       } catch (err) {
@@ -121,7 +121,7 @@ const Profile = () => {
   /* ======= DELETE ACTIVITY ======= */
   const handleDeleteActivity = async (id) => {
     try {
-      await API.delete(`/activities/${id}`);
+      await API.delete(`/api/activities/${id}`);
       const remaining = activities.filter((a) => a._id !== id);
       setActivities(remaining);
       

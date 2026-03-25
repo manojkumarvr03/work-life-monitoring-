@@ -5,7 +5,7 @@ const ActivityHistory = () => {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    API.get("/activities")
+    API.get("/api/activities")
       .then((res) => setActivities(res.data.slice(0, 2)))
       .catch(console.error);
   }, []);

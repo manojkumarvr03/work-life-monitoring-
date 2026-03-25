@@ -13,7 +13,7 @@ const ActivityForm = ({ onAdd }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async () => {
-    const res = await API.post("/activities", form);
+    const res = await API.post("/api/activities", form);
     onAdd(res.data);
     setForm({ studyHours: "", sleepHours: "", physicalActivity: "", stressLevel: "" });
   };

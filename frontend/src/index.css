@@ -15,14 +15,14 @@
   --bg-card-hover: rgba(255, 255, 255, 0.85);
 
   /* Design System Gradients */
-  --accent-blue-start: #3b82f6;
+  --accent-blue-start: #2563eb;
   --accent-blue-end: #0ea5e9;
-  --accent-purple-start: #8b5cf6;
-  --accent-purple-end: #6366f1;
+  --accent-purple-start: #7c4dff;
+  --accent-purple-end: #2979ff;
 
   /* Accents */
-  --accent-primary: #3b82f6;
-  --accent-primary-rgb: 59, 130, 246;
+  --accent-primary: #0ea5e9;
+  --accent-primary-rgb: 14, 165, 233;
   --accent-secondary: #10b981;
   --accent-secondary-rgb: 16, 185, 129;
   --accent-teal: #0d9488;
@@ -30,10 +30,10 @@
   --accent-vibrant-pink: #f472b6;
   --accent-vibrant-amber: #fbbf24;
   --accent-vibrant-violet: #a78bfa;
-  --accent-vibrant-rose: #fb7185;
+  --accent-vibrant-rose: #ff3366;
 
   /* Button/Indicator Gradients */
-  --gradient-main: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #8b5cf6 100%);
+  --gradient-main: linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #7c4dff 100%);
   --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
   --gradient-text: linear-gradient(135deg, #0f172a 0%, #334155 100%);
   --gradient-button: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);

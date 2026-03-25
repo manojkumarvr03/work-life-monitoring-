@@ -22,7 +22,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     const fetchProfile = () => {
-      API.get("/auth/profile")
+      API.get("/api/auth/profile")
         .then((res) => {
           const user = res.data?.user || res.data;
           setUserName(user?.name || "");

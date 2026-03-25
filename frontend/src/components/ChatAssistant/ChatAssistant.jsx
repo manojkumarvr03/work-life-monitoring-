@@ -32,7 +32,7 @@ const ChatAssistant = () => {
       const contextStr = localStorage.getItem("chat_context");
       const context = contextStr ? JSON.parse(contextStr) : {};
 
-      const res = await API.post('/chat', { 
+      const res = await API.post('/api/chat', { 
         message: userMsg,
         ...context
       });

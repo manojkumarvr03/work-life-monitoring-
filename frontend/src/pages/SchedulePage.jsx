@@ -39,7 +39,7 @@ const SchedulePage = () => {
         const fetchSchedules = async () => {
             try {
                 setLoading(true);
-                const res = await API.get(`/schedules?date=${selectedDate}`);
+                const res = await API.get(`/api/schedules?date=${selectedDate}`);
                 setSchedules(res.data.data);
             } catch {
                 showToast("Failed to load schedule", "error");
@@ -64,7 +64,7 @@ const SchedulePage = () => {
         }
 
         try {
-            const res = await API.post("/schedules", form);
+            const res = await API.post("/api/schedules", form);
             // If the created schedule matches the selected date, add it to the view
             if (res.data.data.date.split('T')[0] === selectedDate) {
                 setSchedules((prev) => [...prev, res.data.data].sort((a, b) => a.startTime.localeCompare(b.startTime)));
@@ -106,7 +106,7 @@ const SchedulePage = () => {
     const toggleComplete = async (id, completed) => {
         try {
             const nextStatus = !completed;
-            const res = await API.put(`/schedules/${id}`, { completed: nextStatus });
+            const res = await API.put(`/api/schedules/${id}`, { completed: nextStatus });
             const updatedItem = res.data.data;
             setSchedules((prev) => prev.map((s) => (s._id === id ? updatedItem : s)));
 
@@ -125,7 +125,7 @@ const SchedulePage = () => {
 
     const deleteSchedule = async (id) => {
         try {
-            await API.delete(`/schedules/${id}`);
+            await API.delete(`/api/schedules/${id}`);
             setSchedules((prev) => prev.filter((s) => s._id !== id));
             showToast("Event deleted", "info");
         } catch {
