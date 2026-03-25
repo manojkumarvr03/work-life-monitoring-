@@ -9,7 +9,10 @@ import analysisRoutes from "./routes/analysisRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
-import goalRoutes from "./routes/goalRoutes.js";
+import scheduleRoutes from "./routes/scheduleRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+
+import studyPlannerRoutes from "./routes/studyPlannerRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -29,9 +32,14 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/chat", chatRoutes);
 
-// Goals
-app.use("/api/goals", goalRoutes);
+
+// Schedules
+app.use("/api/schedules", scheduleRoutes);
+
+// Study Planner
+app.use("/api/planner", studyPlannerRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => res.json({ status: "ok", time: new Date().toISOString() }));

@@ -114,19 +114,36 @@ export const getMonthlyReport = () =>
 export const getActivityDates = () =>
   API.get("/reports/activity-dates");
 
+
+
 /* =========================
-   GOAL APIs
+   🧠 STUDY PLANNER APIs
 ========================= */
-export const getGoals = () =>
-  API.get("/goals");
+export const getPlannerSubjects = () =>
+  API.get("/planner/subjects");
 
-export const createGoal = (data) =>
-  API.post("/goals", data);
+export const addPlannerSubject = (data) =>
+  API.post("/planner/subjects", data);
 
-export const updateGoal = (id, data) =>
-  API.put(`/goals/${id}`, data);
+export const deletePlannerSubject = (id) =>
+  API.delete(`/planner/subjects/${id}`);
 
-export const deleteGoal = (id) =>
-  API.delete(`/goals/${id}`);
+export const generatePlannerPlan = (data) =>
+  API.post("/planner/generate", data);
+
+export const getPlannerSessions = (date) =>
+  API.get(`/planner/sessions?date=${date}`);
+
+export const getPlannerWeekSessions = () =>
+  API.get("/planner/sessions/week");
+
+export const updatePlannerSessionStatus = (id, status) =>
+  API.patch(`/planner/sessions/${id}/status`, { status });
+
+export const getPlannerProgress = () =>
+  API.get("/planner/progress");
+
+export const getPlannerInsights = () =>
+  API.get("/planner/insights");
 
 export default API;

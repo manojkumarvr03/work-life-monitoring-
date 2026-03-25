@@ -1,17 +1,50 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { 
+  LayoutDashboard, 
+  ClipboardList, 
+  Calendar, 
+  Lightbulb, 
+  BarChart3, 
+  User, 
+  LogOut,
+  GraduationCap,
+  AlarmClock
+} from "lucide-react";
 import API from "../../services/api";
 import "./sidebar.css";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const [userAvatar, setUserAvatar] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
-    API.get("/auth/profile")
-      .then((res) => setUserName(res.data?.name || res.data?.user?.name || "Student"))
-      .catch(() => { });
+    const fetchProfile = () => {
+      API.get("/auth/profile")
+        .then((res) => {
+          const user = res.data?.user || res.data;
+          setUserName(user?.name || "");
+          setUserRole(user?.role || "Student");
+          setUserAvatar(user?.avatar || "");
+        })
+        .catch(() => { });
+    };
+
+    fetchProfile();
+
+    // Listen for custom "profileUpdate" event to refresh data
+    window.addEventListener("profileUpdate", fetchProfile);
+    window.addEventListener("storage", (e) => {
+      if (e.key === "profileUpdate") fetchProfile();
+    });
+
+    return () => {
+      window.removeEventListener("profileUpdate", fetchProfile);
+      window.removeEventListener("storage", fetchProfile);
+    };
   }, []);
 
   // Live clock
@@ -26,11 +59,13 @@ const Sidebar = () => {
   };
 
   const navItems = [
-    { to: "/dashboard", icon: "📊", label: "Dashboard", badge: null },
-    { to: "/tracker", icon: "📝", label: "Activity Tracker", badge: null },
-    { to: "/goals", icon: "🎯", label: "Goals", badge: null },
-    { to: "/reports", icon: "📈", label: "Reports", badge: null },
-    { to: "/profile", icon: "👤", label: "Profile", badge: null },
+    { to: "/dashboard", icon: <LayoutDashboard size={20} />, label: "Dashboard", badge: null },
+    { to: "/tracker", icon: <ClipboardList size={20} />, label: "Activity Tracker", badge: null },
+    { to: "/dashboard", icon: <AlarmClock size={20} color="#f43f5e" />, label: "Alarms", badge: null }, // Visually match the target
+    { to: "/schedule", icon: <Calendar size={20} />, label: "Schedule", badge: null },
+    { to: "/insights", icon: <Lightbulb size={20} />, label: "Insights", badge: null },
+    { to: "/reports", icon: <BarChart3 size={20} />, label: "Reports", badge: null },
+    { to: "/profile", icon: <User size={20} />, label: "Profile", badge: null },
   ];
 
   const timeStr = currentTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -43,7 +78,9 @@ const Sidebar = () => {
 
       {/* Logo / Title */}
       <div className="sidebar-header">
-        <div className="sidebar-logo-icon">🎓</div>
+        <div className="sidebar-logo-icon">
+          <GraduationCap size={28} color="white" />
+        </div>
         <div className="sidebar-logo-group">
           <span className="sidebar-brand">Work–Life</span>
           <span className="sidebar-brand-sub">Monitor</span>
@@ -77,20 +114,26 @@ const Sidebar = () => {
         {userName && (
           <div className="sidebar-user-info">
             <div className="sidebar-avatar-circle">
-              {userName.charAt(0).toUpperCase()}
+              {userAvatar ? (
+                <img src={userAvatar} alt="Profile" className="sidebar-avatar-img" />
+              ) : (
+                userName.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="sidebar-user-details">
               <div className="sidebar-user-name">{userName}</div>
               <div className="sidebar-user-role">
                 <span className="sidebar-status-dot" />
-                Student — Online
+                {userRole} — Online
               </div>
             </div>
           </div>
         )}
 
         <button className="logout-btn" onClick={logout}>
-          <span className="logout-icon">🚪</span>
+          <span className="logout-icon">
+            <LogOut size={18} />
+          </span>
           <span>Logout</span>
         </button>
       </div>

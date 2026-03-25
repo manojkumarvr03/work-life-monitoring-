@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 ======================= */
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const exists = await User.findOne({ email });
     if (exists) {
@@ -17,11 +17,11 @@ export const registerUser = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
-
     await User.create({
       name,
       email,
-      password: hashed
+      password: hashed,
+      role: role || "Student"
     });
 
     res.status(201).json({ message: "Registration successful" });
@@ -59,6 +59,7 @@ export const loginUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         avatar: user.avatar || null
       }
     });
@@ -80,7 +81,7 @@ export const getProfile = async (req, res) => {
     const activities = await Activity.find({ user: user._id });
 
     const studyHours = activities.reduce(
-      (sum, a) => sum + (a.studyHours || 0),
+      (sum, a) => sum + (Number(a.studyHours || 0) + Number(a.workHours || 0)),
       0
     );
 

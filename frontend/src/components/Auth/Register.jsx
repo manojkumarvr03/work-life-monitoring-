@@ -5,7 +5,7 @@ import "../../styles/auth.css";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "Student" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -78,7 +78,7 @@ const Register = () => {
             {[
               { icon: "✅", text: "Free forever — no hidden fees" },
               { icon: "📊", text: "AI-powered personalized insights" },
-              { icon: "🎯", text: "Smart goal tracking with milestones" },
+              { icon: "📅", text: "Intelligent schedule planning" },
 
             ].map((b, i) => (
               <div key={i} className="auth-benefit-item" style={{ animationDelay: `${i * 0.1}s` }}>
@@ -88,23 +88,7 @@ const Register = () => {
             ))}
           </div>
 
-          {/* Stats row */}
-          <div className="auth-stats-row">
-            <div className="auth-stat">
-              <span className="auth-stat-number">10K+</span>
-              <span className="auth-stat-label">Students</span>
-            </div>
-            <div className="auth-stat-divider" />
-            <div className="auth-stat">
-              <span className="auth-stat-number">95%</span>
-              <span className="auth-stat-label">Improved Focus</span>
-            </div>
-            <div className="auth-stat-divider" />
-            <div className="auth-stat">
-              <span className="auth-stat-number">4.9★</span>
-              <span className="auth-stat-label">Rating</span>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -134,6 +118,20 @@ const Register = () => {
                 required
                 id="register-name"
               />
+            </div>
+
+            <div className="auth-field">
+              <span className="auth-field-icon">👤</span>
+              <select
+                className="auth-input"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                style={{ cursor: "pointer" }}
+              >
+                <option value="Student">Student</option>
+                <option value="Employee">Employee</option>
+              </select>
             </div>
 
             <div className="auth-field">

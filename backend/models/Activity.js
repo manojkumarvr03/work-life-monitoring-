@@ -8,9 +8,15 @@ const activitySchema = new mongoose.Schema(
       required: true
     },
     studyHours: Number,
+    workHours: Number,
+    activityType: String,
+    subjectsCount: Number,
+    classesAttended: Number,
     sleepHours: Number,
     physicalActivity: Number,
-    stressLevel: Number
+    stressLevel: Number,
+    waterLiters: Number,
+    foodProtein: String
   },
   { timestamps: true }
 );

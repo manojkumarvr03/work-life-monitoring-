@@ -8,7 +8,8 @@ import reportRoutes from "./routes/reportRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import focusRoutes from "./routes/focusRoutes.js";
 import habitRoutes from "./routes/habitRoutes.js";
-import goalRoutes from "./routes/goalRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use("/api/report", reportRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/focus", focusRoutes);
 app.use("/api/habits", habitRoutes);
-app.use("/api/goals", goalRoutes);
+
+app.use("/api/chat", chatRoutes);
+
 
 export default app;

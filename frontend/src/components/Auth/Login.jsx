@@ -5,9 +5,8 @@ import "../../styles/auth.css";
 
 const FEATURES = [
   { icon: "📊", title: "Smart Analytics", desc: "AI-powered insights into your study patterns and productivity" },
-  { icon: "🎯", title: "Goal Tracking", desc: "Set, track, and achieve your academic goals effortlessly" },
-
   { icon: "📈", title: "Balance Score", desc: "Real-time work-life balance scoring with recommendations" },
+  { icon: "📅", title: "Schedule Planner", desc: "Organize your study sessions and personal time efficiently" },
 ];
 
 const Login = () => {
@@ -60,7 +59,7 @@ const Login = () => {
             Master Your Academic <span className="text-gradient">Work-Life Balance</span>
           </h1>
           <p className="auth-showcase-desc">
-            Track study habits, monitor wellness, and achieve your academic goals with AI-powered insights.
+            Track study habits, monitor wellness, and optimize your schedule with AI-powered insights.
           </p>
 
           {/* Feature carousel */}
@@ -79,23 +78,7 @@ const Login = () => {
             ))}
           </div>
 
-          {/* Stats row */}
-          <div className="auth-stats-row">
-            <div className="auth-stat">
-              <span className="auth-stat-number">10K+</span>
-              <span className="auth-stat-label">Students</span>
-            </div>
-            <div className="auth-stat-divider" />
-            <div className="auth-stat">
-              <span className="auth-stat-number">95%</span>
-              <span className="auth-stat-label">Improved Focus</span>
-            </div>
-            <div className="auth-stat-divider" />
-            <div className="auth-stat">
-              <span className="auth-stat-number">4.9★</span>
-              <span className="auth-stat-label">Rating</span>
-            </div>
-          </div>
+
         </div>
       </div>
 

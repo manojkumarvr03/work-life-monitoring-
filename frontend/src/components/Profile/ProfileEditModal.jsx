@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { User, X } from "lucide-react";
 import { updateUserProfile } from "../../services/api";
 import "./profileEditModal.css";
 
@@ -40,7 +41,15 @@ const ProfileEditModal = ({ user, onClose, onUpdate }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-        <h2>Edit Profile</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <User size={24} color="#0ea5e9" />
+            <h2 style={{ margin: 0 }}>Edit Profile</h2>
+          </div>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
+            <X size={20} />
+          </button>
+        </div>
 
         {/* NAME FIELD */}
         <label>Name</label>

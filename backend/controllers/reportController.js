@@ -2,7 +2,7 @@ import Activity from "../models/Activity.js";
 
 /* =========================
    📊 SUMMARY REPORT (DATE RANGE)
-========================= */
+ ========================= */
 export const getSummaryReport = async (req, res) => {
   try {
     const startDate = req.query.startDate
@@ -21,11 +21,15 @@ export const getSummaryReport = async (req, res) => {
     let totalStudy = 0;
     let totalSleep = 0;
     let totalStress = 0;
+    let stressCount = 0;
 
     activities.forEach((a) => {
-      totalStudy += Number(a.studyHours || 0);
+      totalStudy += Number(a.studyHours || 0) + Number(a.workHours || 0);
       totalSleep += Number(a.sleepHours || 0);
-      totalStress += Number(a.stressLevel || 0);
+      if (a.stressLevel !== undefined && a.stressLevel !== null) {
+        totalStress += Number(a.stressLevel);
+        stressCount++;
+      }
     });
 
     res.json({
@@ -33,8 +37,8 @@ export const getSummaryReport = async (req, res) => {
       avgSleep: activities.length
         ? Math.round(totalSleep / activities.length)
         : 0,
-      avgStress: activities.length
-        ? Math.round(totalStress / activities.length)
+      avgStress: stressCount
+        ? Math.round(totalStress / stressCount)
         : 0,
     });
   } catch (err) {
@@ -44,7 +48,7 @@ export const getSummaryReport = async (req, res) => {
 
 /* =========================
    📈 WEEKLY REPORT (DATE RANGE)
-========================= */
+ ========================= */
 export const getWeeklyReport = async (req, res) => {
   try {
     const startDate = req.query.startDate
@@ -63,14 +67,29 @@ export const getWeeklyReport = async (req, res) => {
     const labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const study = Array(7).fill(0);
     const stress = Array(7).fill(0);
+    const stressCounts = Array(7).fill(0);
+    const sleep = Array(7).fill(0);
+    const physical = Array(7).fill(0);
 
     activities.forEach((a) => {
       const dayIndex = new Date(a.createdAt).getDay();
-      study[dayIndex] += Number(a.studyHours || 0);
-      stress[dayIndex] += Number(a.stressLevel || 0);
+      study[dayIndex] += Number(a.studyHours || 0) + Number(a.workHours || 0);
+      sleep[dayIndex] += Number(a.sleepHours || 0);
+      physical[dayIndex] += Number(a.physicalActivity || 0);
+      if (a.stressLevel !== undefined && a.stressLevel !== null) {
+        stress[dayIndex] += Number(a.stressLevel);
+        stressCounts[dayIndex]++;
+      }
     });
 
-    res.json({ labels, study, stress });
+    // Average stress levels
+    for (let i = 0; i < 7; i++) {
+      if (stressCounts[i] > 0) {
+        stress[i] = Math.round(stress[i] / stressCounts[i]);
+      }
+    }
+
+    res.json({ labels, study, stress, sleep, physical });
   } catch (err) {
     res.status(500).json({ message: "Weekly report failed" });
   }
@@ -95,7 +114,7 @@ export const getMonthlyReport = async (req, res) => {
       });
 
       if (!months[month]) months[month] = 0;
-      months[month] += Number(a.studyHours || 0);
+      months[month] += Number(a.studyHours || 0) + Number(a.workHours || 0);
     });
 
     const data = Object.keys(months).map((m) => ({

@@ -1,58 +1,54 @@
-const BalanceScoreCard = ({ score = 0, label = "" }) => {
+import { Sparkles, Zap, Target, CheckCircle2 } from "lucide-react";
+
+const BalanceScoreCard = ({ score = 0, label = "", title = "Balance Score", description = "Your work-life balance" }) => {
+  const safeId = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
   const radius = 70;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (circumference * Math.min(100, score)) / 100;
 
   const getColor = () => {
-    if (score >= 80) return ["#10b981", "#22d3ee"];
-    if (score >= 60) return ["#3b82f6", "#60a5fa"];
-    return ["#f59e0b", "#f97316"];
+    if (score >= 80) return ["#10b981", "#34d399"]; // Emerald to Mint
+    if (score >= 60) return ["#3b82f6", "#8b5cf6"]; // Blue to Violet
+    return ["#f43f5e", "#fb923c"]; // Rose to Orange (Vibrant Warning)
   };
   const [c1, c2] = getColor();
 
-  const getEmoji = () => {
-    if (score >= 80) return "🌟";
-    if (score >= 60) return "⚡";
-    return "💪";
+  const getIcon = () => {
+    if (score >= 80) return <Sparkles size={24} color="#10b981" className="btn-glow" />;
+    if (score >= 60) return <Zap size={24} color="#3b82f6" />;
+    return <Target size={24} color="#f43f5e" />;
   };
 
   const getMsg = () => {
     if (score >= 80) return "Excellent Balance!";
-    if (score >= 60) return label || "Keep Going!";
-    return label || "Needs Improvement";
+    if (score >= 60) return label || "Good Balance";
+    return label || "Needs Focus";
   };
 
   return (
-    <div
+    <div className="card glass-card"
       style={{
-        background: "rgba(18,36,62,0.6)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        border: "1px solid rgba(59,130,246,0.14)",
-        borderRadius: "20px",
-        padding: "28px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: "16px",
-        transition: "all 0.3s ease",
-        position: "relative",
-        overflow: "hidden",
+        gap: "24px",
+        padding: "32px",
       }}
     >
       {/* Top label */}
       <h3
+        className="glow-text"
         style={{
-          fontSize: "13px",
+          fontSize: "14px",
           fontWeight: 700,
           textTransform: "uppercase",
-          letterSpacing: "1px",
-          color: "#8badc8",
+          letterSpacing: "0.1em",
+          color: "var(--text-secondary)",
           margin: 0,
           alignSelf: "flex-start",
         }}
       >
-        ⚖️ Balance Score
+        {title}
       </h3>
 
       {/* SVG Ring */}
@@ -64,12 +60,12 @@ const BalanceScoreCard = ({ score = 0, label = "" }) => {
           style={{ transform: "rotate(-90deg)" }}
         >
           <defs>
-            <linearGradient id="balanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id={`balanceGrad-${safeId}`} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={c1} />
               <stop offset="100%" stopColor={c2} />
             </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="4" result="blur" />
+            <filter id={`glow-${safeId}`}>
+              <feGaussianBlur stdDeviation="6" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -83,8 +79,8 @@ const BalanceScoreCard = ({ score = 0, label = "" }) => {
             cy="85"
             r={radius}
             fill="none"
-            stroke="rgba(59,130,246,0.1)"
-            strokeWidth="10"
+            stroke="rgba(255, 255, 255, 0.03)"
+            strokeWidth="12"
           />
 
           {/* Progress */}
@@ -93,13 +89,13 @@ const BalanceScoreCard = ({ score = 0, label = "" }) => {
             cy="85"
             r={radius}
             fill="none"
-            stroke="url(#balanceGrad)"
-            strokeWidth="10"
+            stroke={`url(#balanceGrad-${safeId})`}
+            strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            filter="url(#glow)"
-            style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)" }}
+            filter={`url(#glow-${safeId})`}
+            style={{ transition: "stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1)" }}
           />
         </svg>
 
@@ -114,14 +110,12 @@ const BalanceScoreCard = ({ score = 0, label = "" }) => {
           }}
         >
           <div
+            className="shimmer-text"
             style={{
-              fontSize: "36px",
-              fontWeight: 900,
-              background: `linear-gradient(135deg, ${c1}, ${c2})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              fontSize: "38px",
+              fontWeight: 800,
               lineHeight: 1,
+              letterSpacing: "-0.04em"
             }}
           >
             {score}%
@@ -131,35 +125,22 @@ const BalanceScoreCard = ({ score = 0, label = "" }) => {
 
       {/* Label */}
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: "22px", marginBottom: "4px" }}>{getEmoji()}</div>
+        <div style={{ fontSize: "24px", marginBottom: "8px", display: "flex", justifyContent: "center" }}>{getIcon()}</div>
         <div
           style={{
-            fontSize: "15px",
+            fontSize: "16px",
             fontWeight: 700,
-            color: "#e2e8f0",
+            color: "var(--text-primary)",
+            marginBottom: "6px"
           }}
         >
           {getMsg()}
         </div>
-        <div style={{ fontSize: "12px", color: "#8badc8", marginTop: "4px" }}>
-          Your weekly work-life balance
+        <div style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+          {description}
         </div>
       </div>
-
-      {/* Background glow orb */}
-      <div
-        style={{
-          position: "absolute",
-          width: "200px",
-          height: "200px",
-          background: `radial-gradient(circle, ${c1}18 0%, transparent 70%)`,
-          borderRadius: "50%",
-          bottom: "-60px",
-          right: "-60px",
-          pointerEvents: "none",
-        }}
-      />
-    </div>
+    </div >
   );
 };
 

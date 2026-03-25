@@ -10,10 +10,16 @@ export const addActivity = async (req, res) => {
 
     const activity = await Activity.create({
       user: req.user.id, // ✅ correct
+      activityType: req.body.activityType || "Study",
       studyHours: req.body.studyHours || 0,
+      workHours: req.body.workHours || 0,
+      subjectsCount: req.body.subjectsCount || 0,
+      classesAttended: req.body.classesAttended || 0,
       sleepHours: req.body.sleepHours || 0,
       physicalActivity: req.body.physicalActivity || 0,
-      stressLevel: req.body.stressLevel || 0
+      stressLevel: req.body.stressLevel || 0,
+      waterLiters: req.body.waterLiters || 0,
+      foodProtein: req.body.foodProtein || ""
     });
 
     res.status(201).json(activity);

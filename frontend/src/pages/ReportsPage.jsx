@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar/Sidebar";
+import WorkLifeChart from "../components/Analytics/WorkLifeChart";
+import BalanceScoreCard from "../components/Dashboard/BalanceScoreCard";
 import API from "../services/api";
 import "../styles/reports.css";
 
@@ -18,6 +20,19 @@ import {
   Legend,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
+import { 
+  BarChart3, 
+  Book, 
+  Briefcase, 
+  Moon, 
+  Zap, 
+  Calendar, 
+  TrendingUp, 
+  PieChart, 
+  CalendarDays, 
+  ChevronLeft, 
+  ChevronRight 
+} from "lucide-react";
 
 /* Register chart parts */
 ChartJS.register(
@@ -39,7 +54,7 @@ const chartOptions = {
     legend: {
       labels: {
         color: "#94a3b8",
-        font: { family: "Inter", size: 12, weight: "600" },
+        font: { family: "'Outfit', sans-serif", size: 12, weight: "600" },
         padding: 18,
         boxWidth: 10,
         boxHeight: 10,
@@ -55,8 +70,8 @@ const chartOptions = {
       bodyColor: "#94a3b8",
       padding: 14,
       cornerRadius: 12,
-      titleFont: { family: "Inter", weight: "700", size: 13 },
-      bodyFont: { family: "Inter", size: 12 },
+      titleFont: { family: "'Outfit', sans-serif", weight: "700", size: 13 },
+      bodyFont: { family: "'Outfit', sans-serif", size: 12 },
       displayColors: true,
       boxPadding: 6,
     },
@@ -64,12 +79,12 @@ const chartOptions = {
   scales: {
     x: {
       grid: { color: "rgba(255,255,255,0.03)", drawBorder: false },
-      ticks: { color: "#64748b", font: { family: "Inter", size: 11, weight: "500" } },
+      ticks: { color: "#64748b", font: { family: "'Outfit', sans-serif", size: 11, weight: "500" } },
       border: { display: false },
     },
     y: {
       grid: { color: "rgba(255,255,255,0.03)", drawBorder: false },
-      ticks: { color: "#64748b", font: { family: "Inter", size: 11, weight: "500" } },
+      ticks: { color: "#64748b", font: { family: "'Outfit', sans-serif", size: 11, weight: "500" } },
       border: { display: false },
       beginAtZero: true,
     },
@@ -85,7 +100,7 @@ const donutOptions = {
       position: "bottom",
       labels: {
         color: "#94a3b8",
-        font: { family: "Inter", size: 12, weight: "600" },
+        font: { family: "'Outfit', sans-serif", size: 12, weight: "600" },
         padding: 18,
         boxWidth: 10,
         boxHeight: 10,
@@ -111,8 +126,11 @@ const Reports = () => {
   const [summary, setSummary] = useState(null);
   const [weekly, setWeekly] = useState(null);
   const [activityDates, setActivityDates] = useState([]);
+  const [today, setToday] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   /* =========================
      FETCH REPORT DATA
@@ -120,24 +138,52 @@ const Reports = () => {
   const fetchReports = useCallback(async () => {
     try {
       setLoading(true);
-      const [summaryRes, weeklyRes, datesRes] = await Promise.all([
-        API.get("/reports/summary"),
-        API.get("/reports/weekly"),
+
+      // Calculate week range for selectedDate
+      const d = new Date(selectedDate);
+      const day = d.getDay(); // 0 (Sun) to 6 (Sat)
+
+      const start = new Date(d);
+      start.setDate(d.getDate() - day);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+
+      const startISO = start.toISOString();
+      const endISO = end.toISOString();
+
+      const [summaryRes, weeklyRes, datesRes, todayRes, profileRes] = await Promise.all([
+        API.get(`/reports/summary?startDate=${startISO}&endDate=${endISO}`),
+        API.get(`/reports/weekly?startDate=${startISO}&endDate=${endISO}`),
         API.get("/reports/activity-dates"),
+        API.get(`/analysis/today?date=${selectedDate.toISOString()}`),
+        API.get("/auth/profile"),
       ]);
 
       setSummary(summaryRes.data);
       setWeekly(weeklyRes.data);
       setActivityDates(datesRes.data);
+      setToday(todayRes.data);
+      setUser(profileRes.data);
     } catch (err) {
       console.error("Report fetch failed", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchReports();
+  }, [fetchReports]);
+
+  // Real-time update every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchReports();
+    }, 30000); // 30s
+    return () => clearInterval(interval);
   }, [fetchReports]);
 
   /* =========================
@@ -164,9 +210,48 @@ const Reports = () => {
     return activityDates.includes(dateKey);
   };
 
+  const handleDateClick = (day) => {
+    if (!day) return;
+    const clickedDate = new Date(year, month, day);
+    setSelectedDate(clickedDate);
+  };
+
+  const isSelected = (day) => {
+    return day &&
+      selectedDate.getDate() === day &&
+      selectedDate.getMonth() === month &&
+      selectedDate.getFullYear() === year;
+  };
+
   // Count active days this month
   const activeDaysCount = Array.from({ length: daysInMonth }, (_, i) => i + 1)
     .filter(d => hasActivity(d)).length;
+
+  // Calculate Latest Balance Score
+  let todayScore = 0;
+  let todayLabel = "No Logs Found";
+
+  if (today) {
+    const studyHours = Number(today.studyHours || 0) + Number(today.workHours || 0);
+    const sleepHours = Number(today.sleepHours || 0);
+    const stress = Number(today.stressLevel || 0);
+    const physical = Number(today.physicalActivity || 0);
+
+    let todayWorkScore = 0;
+    if (studyHours >= 6 && studyHours <= 8) todayWorkScore = 100;
+    else todayWorkScore = Math.max(0, 100 - Math.abs(studyHours - 7) * 15);
+
+    let todayLifeScore = 0;
+    if (sleepHours >= 7 && sleepHours <= 8) todayLifeScore = 50;
+    else todayLifeScore = Math.max(0, 50 - Math.abs(sleepHours - 7.5) * 10);
+    todayLifeScore += Math.max(0, 30 - stress * 5);
+    todayLifeScore += Math.min(20, (physical / 30) * 20);
+
+    todayScore = Math.round((todayWorkScore + todayLifeScore) / 2);
+    if (todayScore >= 80) todayLabel = "Excellent";
+    else if (todayScore >= 60) todayLabel = "Good Balance";
+    else if (todayScore > 0) todayLabel = "Needs Focus";
+  }
 
   /* =========================
      CHART DATA
@@ -175,7 +260,7 @@ const Reports = () => {
     labels: weekly.labels,
     datasets: [
       {
-        label: "Study Hours",
+        label: user?.user?.role === "Employee" ? "Work Hours" : "Study Hours",
         data: weekly.study,
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
@@ -218,7 +303,7 @@ const Reports = () => {
   };
 
   const donutData = summary && {
-    labels: ["Study", "Sleep", "Stress"],
+    labels: [user?.user?.role === "Employee" ? "Work" : "Study", "Sleep", "Stress"],
     datasets: [
       {
         data: [
@@ -275,14 +360,13 @@ const Reports = () => {
           {/* ===== HEADER ===== */}
           <motion.div className="reports-header" variants={itemVariants}>
             <div className="reports-header-left">
-              <h1 className="reports-title">📊 Progress Reports</h1>
-              <p className="reports-subtitle">Track your academic journey with detailed analytics</p>
-            </div>
-            <div className="reports-header-right">
-              <div className="reports-badge">
-                <span className="ping-dot" /> Live Data
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <BarChart3 size={32} color="#0ea5e9" />
+                <h1 className="reports-title" style={{ margin: 0 }}>Progress Reports</h1>
               </div>
+              <p className="reports-subtitle">Track your {user?.user?.role === "Employee" ? "professional" : "academic"} journey with detailed analytics</p>
             </div>
+
           </motion.div>
 
           {/* ===== SUMMARY CARDS ===== */}
@@ -300,9 +384,11 @@ const Reports = () => {
               <>
                 <div className="summary-card">
                   <div className="summary-card-glow glow-purple" />
-                  <div className="summary-card-icon purple-icon">📘</div>
+                  <div className="summary-card-icon purple-icon">
+                    {user?.user?.role === "Employee" ? <Briefcase size={20} /> : <Book size={20} />}
+                  </div>
                   <div className="summary-card-content">
-                    <span className="summary-label">Total Study</span>
+                    <span className="summary-label">Total {user?.user?.role === "Employee" ? "Work" : "Study"}</span>
                     <div className="summary-number">
                       {summary.totalStudy}<span className="summary-unit">hrs</span>
                     </div>
@@ -310,7 +396,7 @@ const Reports = () => {
                 </div>
                 <div className="summary-card">
                   <div className="summary-card-glow glow-blue" />
-                  <div className="summary-card-icon blue-icon">😴</div>
+                  <div className="summary-card-icon blue-icon"><Moon size={20} /></div>
                   <div className="summary-card-content">
                     <span className="summary-label">Avg Sleep</span>
                     <div className="summary-number">
@@ -320,7 +406,7 @@ const Reports = () => {
                 </div>
                 <div className="summary-card">
                   <div className="summary-card-glow glow-red" />
-                  <div className="summary-card-icon red-icon">⚡</div>
+                  <div className="summary-card-icon red-icon"><Zap size={20} /></div>
                   <div className="summary-card-content">
                     <span className="summary-label">Avg Stress</span>
                     <div className="summary-number">
@@ -330,7 +416,7 @@ const Reports = () => {
                 </div>
                 <div className="summary-card">
                   <div className="summary-card-glow glow-green" />
-                  <div className="summary-card-icon green-icon">📅</div>
+                  <div className="summary-card-icon green-icon"><Calendar size={20} /></div>
                   <div className="summary-card-content">
                     <span className="summary-label">Active Days</span>
                     <div className="summary-number">
@@ -346,8 +432,13 @@ const Reports = () => {
           <motion.div className="charts-grid" variants={itemVariants}>
             <div className="chart-card">
               <div className="chart-card-header">
-                <h3>📈 Weekly Productivity</h3>
-                <span className="chart-badge">This Week</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <TrendingUp size={18} color="#0ea5e9" />
+                  <h3 style={{ margin: 0 }}>Weekly Productivity</h3>
+                </div>
+                <span className="chart-badge">
+                  {selectedDate.toLocaleDateString("en-GB", { day: 'numeric', month: 'short' })}'s Week
+                </span>
               </div>
               <div className="chart-wrapper">
                 {weeklyChartData ? (
@@ -364,7 +455,10 @@ const Reports = () => {
 
             <div className="chart-card">
               <div className="chart-card-header">
-                <h3>🍩 Activity Distribution</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <PieChart size={18} color="#10b981" />
+                  <h3 style={{ margin: 0 }}>Activity Distribution</h3>
+                </div>
                 <span className="chart-badge">All Time</span>
               </div>
               <div className="chart-wrapper donut-wrapper">
@@ -379,23 +473,48 @@ const Reports = () => {
             </div>
           </motion.div>
 
+          <motion.div variants={itemVariants} style={{
+            marginBottom: "22px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "20px"
+          }}>
+            <div style={{ flex: 2, minWidth: "300px" }}>
+              <WorkLifeChart 
+                analytics={weekly} 
+                isWorkRole={user?.user?.role === "Employee"} 
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: "300px" }}>
+              <BalanceScoreCard
+                score={todayScore}
+                label={todayLabel}
+                title={isToday(selectedDate.getDate()) ? "📅 Today's Balance" : `📅 ${selectedDate.toLocaleDateString("en-GB", { day: 'numeric', month: 'short' })}'s Balance`}
+                description={isToday(selectedDate.getDate()) ? "Your today's work-life balance score" : `Your work-life balance on ${selectedDate.toLocaleDateString("en-GB", { day: 'numeric', month: 'short' })}`}
+              />
+            </div>
+          </motion.div>
+
           {/* ===== CALENDAR ===== */}
           <motion.div className="calendar-section" variants={itemVariants}>
             <div className="calendar-card">
               <div className="calendar-top">
                 <div className="calendar-title-area">
-                  <h3>📆 Activity Calendar</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <CalendarDays size={20} color="#8b5cf6" />
+                    <h3 style={{ margin: 0 }}>Activity Calendar</h3>
+                  </div>
                   <span className="calendar-hint">Track your logged activity days</span>
                 </div>
                 <div className="calendar-nav">
                   <button className="cal-nav-btn" onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}>
-                    ◀
+                    <ChevronLeft size={16} />
                   </button>
                   <span className="cal-month-label">
                     {currentMonth.toLocaleString("default", { month: "long" })} {year}
                   </span>
                   <button className="cal-nav-btn" onClick={() => setCurrentMonth(new Date(year, month + 1, 1))}>
-                    ▶
+                    <ChevronRight size={16} />
                   </button>
                 </div>
               </div>
@@ -408,7 +527,9 @@ const Reports = () => {
                 {calendarDays.map((day, i) => (
                   <div
                     key={i}
-                    className={`cal-day ${day ? "" : "cal-day-empty"} ${hasActivity(day) ? "cal-active" : ""} ${isToday(day) ? "cal-today" : ""}`}
+                    onClick={() => handleDateClick(day)}
+                    className={`cal-day ${day ? "" : "cal-day-empty"} ${hasActivity(day) ? "cal-active" : ""} ${isToday(day) ? "cal-today" : ""} ${isSelected(day) ? "cal-selected" : ""}`}
+                    style={{ cursor: day ? "pointer" : "default" }}
                   >
                     {day && (
                       <>
