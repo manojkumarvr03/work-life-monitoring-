@@ -80,25 +80,25 @@ const StudyPlannerPage = () => {
   const [newSubject, setNewSubject] = useState({ name: "", priority: "Medium", deadline: "", dailyHours: 2, color: "#0ea5e9" });
 
   useEffect(() => {
-    fetchInitialData();
-  }, []);
+    const fetchInitialData = async () => {
+      try {
+        const [subjRes, sessRes, progRes, insightRes] = await Promise.all([
+          PlannerAPI.getPlannerSubjects(),
+          PlannerAPI.getPlannerSessions(selectedDate),
+          PlannerAPI.getPlannerProgress(),
+          PlannerAPI.getPlannerInsights()
+        ]);
+        setSubjects(subjRes.data);
+        setSessions(sessRes.data);
+        setProgress(progRes.data);
+        setInsights(insightRes.data);
+      } catch (err) {
+        console.error("Fetch Data Error:", err);
+      }
+    };
 
-  const fetchInitialData = async () => {
-    try {
-      const [subjRes, sessRes, progRes, insightRes] = await Promise.all([
-        PlannerAPI.getPlannerSubjects(),
-        PlannerAPI.getPlannerSessions(selectedDate),
-        PlannerAPI.getPlannerProgress(),
-        PlannerAPI.getPlannerInsights()
-      ]);
-      setSubjects(subjRes.data);
-      setSessions(sessRes.data);
-      setProgress(progRes.data);
-      setInsights(insightRes.data);
-    } catch (err) {
-      console.error("Fetch Data Error:", err);
-    }
-  };
+    fetchInitialData();
+  }, [selectedDate]);
 
   const handleCreateSubject = async (e) => {
     e.preventDefault();

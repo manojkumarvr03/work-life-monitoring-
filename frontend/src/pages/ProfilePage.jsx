@@ -57,31 +57,32 @@ const Profile = () => {
   };
 
   /* ======= FETCH DATA ======= */
-  const fetchAll = async () => {
-    try {
-      const profileRes = await API.get("/auth/profile");
-      const activityRes = await API.get("/activities");
-      setProfile(profileRes.data);
-      setActivities(activityRes.data);
-    } catch (err) {
-      console.error("Profile fetch failed", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const profileRes = await API.get("/auth/profile");
+        const activityRes = await API.get("/activities");
+        setProfile(profileRes.data);
+        setActivities(activityRes.data);
+      } catch (err) {
+        console.error("Profile fetch failed", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchAll();
 
     // Refresh if profile is updated from other components/tabs
     window.addEventListener("profileUpdate", fetchAll);
-    window.addEventListener("storage", (e) => {
+    const storageHandler = (e) => {
       if (e.key === "profileUpdate") fetchAll();
-    });
+    };
+    window.addEventListener("storage", storageHandler);
 
     return () => {
       window.removeEventListener("profileUpdate", fetchAll);
-      window.removeEventListener("storage", fetchAll);
+      window.removeEventListener("storage", storageHandler);
     };
   }, []);
 

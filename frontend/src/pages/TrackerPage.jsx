@@ -43,27 +43,27 @@ const TrackerPage = () => {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const fetchActivities = async () => {
-    try {
-      const res = await API.get("/activities");
-      setActivities(res.data);
-    } catch (err) {
-      console.error("Failed to load activities", err);
-    }
-  };
-
-  const fetchProfile = async () => {
-    try {
-      const res = await API.get("/auth/profile");
-      const role = res.data.user?.role || "Student";
-      setUserRole(role);
-      setForm(prev => ({ ...prev, activityType: role === "Employee" ? "Work" : "Study" }));
-    } catch (err) {
-      console.error("Failed to load profile", err);
-    }
-  };
-
   useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const res = await API.get("/activities");
+        setActivities(res.data);
+      } catch (err) {
+        console.error("Failed to load activities", err);
+      }
+    };
+
+    const fetchProfile = async () => {
+      try {
+        const res = await API.get("/auth/profile");
+        const role = res.data.user?.role || "Student";
+        setUserRole(role);
+        setForm(prev => ({ ...prev, activityType: role === "Employee" ? "Work" : "Study" }));
+      } catch (err) {
+        console.error("Failed to load profile", err);
+      }
+    };
+
     fetchProfile();
     fetchActivities();
   }, []);

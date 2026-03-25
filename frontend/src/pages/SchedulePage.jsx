@@ -162,7 +162,7 @@ const SchedulePage = () => {
 
         const interval = setInterval(checkEndTimes, 30000); // Check every 30s
         return () => clearInterval(interval);
-    }, [schedules, alarmSound, playedAlarms]);
+    }, [schedules, alarmSound, playedAlarms, showToast]);
 
     const handleSoundChange = (e) => {
         const file = e.target.files[0];
