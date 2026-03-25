@@ -40,9 +40,8 @@ function App() {
         {/* Analytics & Profile */}
         <Route path="/insights" element={<InsightsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        
         {/* Catch-all redirect to login for any unknown paths */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
     </GoogleOAuthProvider>

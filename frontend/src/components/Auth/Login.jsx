@@ -188,15 +188,26 @@ const Login = () => {
           </div>
 
           <div className="google-auth-wrapper">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError("Google Sign-In failed")}
-              useOneTap
-              theme="outline"
-              size="large"
-              width="100%"
-              shape="pill"
-            />
+            {process.env.REACT_APP_GOOGLE_CLIENT_ID && 
+             process.env.REACT_APP_GOOGLE_CLIENT_ID !== "your_google_client_id_here" ? (
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError("Google Sign-In failed")}
+                useOneTap
+                theme="outline"
+                size="large"
+                width="100%"
+                shape="pill"
+              />
+            ) : (
+              <button 
+                className="auth-btn google-btn-placeholder" 
+                onClick={() => setError("Google Client ID not configured. Please add it to your .env file.")}
+                type="button"
+              >
+                <span className="google-icon">G</span> Sign in with Google (Setup Required)
+              </button>
+            )}
           </div>
 
           <div className="auth-footer">
