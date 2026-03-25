@@ -12,6 +12,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SchedulePage from "./pages/SchedulePage";
 import ParticleBackground from "./components/ParticleBackground";
 import ChatAssistant from "./components/ChatAssistant/ChatAssistant";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -20,7 +21,8 @@ function App() {
   const isAuth = !!localStorage.getItem("token");
 
   return (
-    <Router>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <Router>
       <ParticleBackground />
       {isAuth && <ChatAssistant />}
 
@@ -41,9 +43,9 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         
         {/* Catch-all redirect to login for any unknown paths */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
+    </GoogleOAuthProvider>
   );
 }
 

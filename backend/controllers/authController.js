@@ -2,6 +2,10 @@ import User from "../models/User.js";
 import Activity from "../models/Activity.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 /* =======================
    REGISTER
@@ -157,6 +161,63 @@ export const changePassword = async (req, res) => {
     res.json({ message: "Password changed successfully" });
   } catch (err) {
     res.status(500).json({ message: "Password change failed" });
+  }
+};
+
+/* =======================
+   GOOGLE LOGIN
+======================= */
+export const googleLogin = async (req, res) => {
+  try {
+    const { token: googleToken } = req.body;
+    
+    // 1. Verify Google Token
+    const ticket = await client.verifyIdToken({
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { sub, email, name, picture } = payload;
+
+    // 2. Find or Create User
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user for Google Sign-in
+      user = await User.create({
+        name,
+        email,
+        googleId: sub,
+        avatar: picture || "",
+        role: "Student",
+      });
+    } else if (!user.googleId) {
+      // Link Google ID to existing email account
+      user.googleId = sub;
+      if (!user.avatar) user.avatar = picture;
+      await user.save();
+    }
+
+    // 3. Issue our JWT
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || null
+      }
+    });
+  } catch (err) {
+    console.error("Google verify error:", err);
+    res.status(400).json({ message: "Google account verification failed" });
   }
 };
 

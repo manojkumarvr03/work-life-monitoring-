@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../services/api";
+import { GoogleLogin } from "@react-oauth/google";
 import "../../styles/auth.css";
 
 const Register = () => {
@@ -62,6 +63,27 @@ const Register = () => {
       if (message.toLowerCase().includes("already")) {
         setTimeout(() => navigate("/"), 2000);
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (response) => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Google registration failed");
+      
+      localStorage.setItem("token", data.token);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -216,6 +238,22 @@ const Register = () => {
               )}
             </button>
           </form>
+
+          <div className="auth-divider">
+            <span>Or continue with</span>
+          </div>
+
+          <div className="google-auth-wrapper">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError("Google Sign-In failed")}
+              useOneTap
+              theme="outline"
+              size="large"
+              width="100%"
+              shape="pill"
+            />
+          </div>
 
           <div className="auth-footer">
             Already have an account?{" "}
