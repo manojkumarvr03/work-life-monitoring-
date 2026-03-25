@@ -12,6 +12,13 @@
     gap: 16px;
 }
 
+@media (max-width: 640px) {
+    .insights-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 .insights-header-text h1 {
     font-size: 28px;
     font-weight: 900;
@@ -45,6 +52,14 @@
     gap: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 480px) {
+    .insight-stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
 }
 
 .insight-stat-card:hover {
@@ -234,6 +249,14 @@
     border-radius: 12px;
     border: 1px solid #e2e8f0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+@media (max-width: 480px) {
+    .rec-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
 }
 
 .rec-icon {

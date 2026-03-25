@@ -8,7 +8,9 @@ import {
   BarChart3, 
   User, 
   LogOut,
-  GraduationCap
+  GraduationCap,
+  Menu,
+  X
 } from "lucide-react";
 import API from "../../services/api";
 import "./sidebar.css";
@@ -19,6 +21,7 @@ const Sidebar = () => {
   const [userRole, setUserRole] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = () => {
@@ -70,7 +73,16 @@ const Sidebar = () => {
   const dateStr = currentTime.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
 
   return (
-    <aside className="sidebar">
+    <>
+      {/* Mobile Toggle Button */}
+      <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />}
+
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
       {/* Decorative gradient line on right edge */}
       <div className="sidebar-edge-line" />
 
@@ -99,6 +111,7 @@ const Sidebar = () => {
             key={to}
             to={to}
             className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+            onClick={() => setIsOpen(false)}
           >
             <span className="nav-icon">{icon}</span>
             <span className="nav-label">{label}</span>
@@ -136,6 +149,7 @@ const Sidebar = () => {
         </button>
       </div>
     </aside>
+    </>
   );
 };
 

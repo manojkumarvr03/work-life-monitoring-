@@ -405,8 +405,25 @@
   background: white;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .profile-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .profile-page {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .academic-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
   }
 }

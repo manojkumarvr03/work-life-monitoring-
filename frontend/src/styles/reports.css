@@ -10,6 +10,13 @@
   margin-bottom: 28px;
 }
 
+@media (max-width: 768px) {
+  .reports-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
 .reports-header-left {
   flex: 1;
 }
@@ -203,6 +210,12 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 640px) {
+  .chart-card {
+    padding: 16px;
+  }
 }
 
 .chart-card:hover {
