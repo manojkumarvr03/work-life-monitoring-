@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -38,35 +38,35 @@ const TrackerPage = () => {
   const [toast, setToast] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const showToast = (message, type = "success") => {
+  const showToast = useCallback((message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
-  };
+  }, []);
+
+  const fetchActivities = useCallback(async () => {
+    try {
+      const res = await API.get("/api/activities");
+      setActivities(res.data);
+    } catch (err) {
+      console.error("Failed to load activities", err);
+    }
+  }, []);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      const res = await API.get("/api/auth/profile");
+      const role = res.data.user?.role || "Student";
+      setUserRole(role);
+      setForm(prev => ({ ...prev, activityType: role === "Employee" ? "Work" : "Study" }));
+    } catch (err) {
+      console.error("Failed to load profile", err);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const res = await API.get("/activities");
-        setActivities(res.data);
-      } catch (err) {
-        console.error("Failed to load activities", err);
-      }
-    };
-
-    const fetchProfile = async () => {
-      try {
-        const res = await API.get("/auth/profile");
-        const role = res.data.user?.role || "Student";
-        setUserRole(role);
-        setForm(prev => ({ ...prev, activityType: role === "Employee" ? "Work" : "Study" }));
-      } catch (err) {
-        console.error("Failed to load profile", err);
-      }
-    };
-
     fetchProfile();
     fetchActivities();
-  }, []);
+  }, [fetchProfile, fetchActivities]);
 
   const handleSubmit = async () => {
     if (form.activityType === "Study" && !form.studyHours) {
@@ -86,7 +86,7 @@ const TrackerPage = () => {
 
     setSaving(true);
     try {
-      await API.post("/activities", { ...form, stressLevel: Number(form.stressLevel) });
+      await API.post("/api/activities", { ...form, stressLevel: Number(form.stressLevel) });
       setForm({
         activityType: form.activityType,
         studyHours: "",

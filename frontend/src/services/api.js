@@ -29,7 +29,9 @@ const request = async (endpoint, method = "GET", body = null) => {
       localStorage.removeItem("token");
       window.location.href = "/";
     }
-    throw { response: { data } }; // Maintain compatibility with existing axios-style error handling
+    const error = new Error(data.message || "API Request Failed");
+    error.response = { data };
+    throw error;
   }
 
   return { data }; // Maintain compatibility with existing axios-style response handling

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import API, { changePassword } from "../services/api";
@@ -51,10 +51,10 @@ const Profile = () => {
   const [exporting, setExporting] = useState(false);
 
   /* ======= TOAST ======= */
-  const showToast = (msg, type = "success") => {
+  const showToast = useCallback((msg, type = "success") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
-  };
+  }, []);
 
   /* ======= FETCH DATA ======= */
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { 
     Calendar, 
     Plus, 
@@ -30,10 +30,10 @@ const SchedulePage = () => {
     const [toast, setToast] = useState(null);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-    const showToast = (message, type = "success") => {
+    const showToast = useCallback((message, type = "success") => {
         setToast({ message, type });
         setTimeout(() => setToast(null), 3000);
-    };
+    }, []);
 
     useEffect(() => {
         const fetchSchedules = async () => {
@@ -48,7 +48,7 @@ const SchedulePage = () => {
             }
         };
         fetchSchedules();
-    }, [selectedDate]);
+    }, [selectedDate, showToast]);
 
     const createSchedule = async (e) => {
         e.preventDefault();
