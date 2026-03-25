@@ -35,19 +35,18 @@ const SchedulePage = () => {
         setTimeout(() => setToast(null), 3000);
     };
 
-    const fetchSchedules = async () => {
-        try {
-            setLoading(true);
-            const res = await API.get(`/schedules?date=${selectedDate}`);
-            setSchedules(res.data.data);
-        } catch {
-            showToast("Failed to load schedule", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchSchedules = async () => {
+            try {
+                setLoading(true);
+                const res = await API.get(`/schedules?date=${selectedDate}`);
+                setSchedules(res.data.data);
+            } catch {
+                showToast("Failed to load schedule", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchSchedules();
     }, [selectedDate]);
 

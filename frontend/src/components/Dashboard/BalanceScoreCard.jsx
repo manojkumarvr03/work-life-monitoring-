@@ -1,4 +1,4 @@
-import { Sparkles, Zap, Target, CheckCircle2 } from "lucide-react";
+import { Sparkles, Zap, Target } from "lucide-react";
 
 const BalanceScoreCard = ({ score = 0, label = "", title = "Balance Score", description = "Your work-life balance" }) => {
   const safeId = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');

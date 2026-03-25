@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar/Sidebar";
 import API from "../services/api";
 import "../styles/insights.css";
@@ -16,19 +15,18 @@ import {
     Legend,
 } from "chart.js";
 import { Line, Radar } from "react-chartjs-2";
-import { 
-    Lightbulb, 
-    BookOpen, 
-    HeartPulse, 
-    Zap, 
-    TrendingUp, 
-    Compass, 
-    Bot, 
-    AlertTriangle, 
-    Moon, 
-    Star, 
-    ClipboardList,
-    CheckCircle2
+import {
+    Lightbulb,
+    BookOpen,
+    HeartPulse,
+    Zap,
+    TrendingUp,
+    Compass,
+    Bot,
+    AlertTriangle,
+    Moon,
+    Star,
+    ClipboardList
 } from "lucide-react";
 
 ChartJS.register(
