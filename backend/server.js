@@ -13,9 +13,43 @@ import scheduleRoutes from "./routes/scheduleRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 
 import studyPlannerRoutes from "./routes/studyPlannerRoutes.js";
+import User from "./models/User.js";
+import bcrypt from "bcryptjs";
 
 dotenv.config();
-connectDB();
+
+const seedAdmin = async () => {
+  try {
+    const adminEmail = "mnojkumarvr@gmail.com";
+    const adminPass = "manoj9703";
+    
+    let admin = await User.findOne({ email: adminEmail });
+    
+    if (!admin) {
+      console.log("Seeding Admin User...");
+      const salt = await bcrypt.genSalt(10);
+      const hashed = await bcrypt.hash(adminPass, salt);
+      await User.create({
+        name: "Super Admin",
+        email: adminEmail,
+        password: hashed,
+        role: "Admin"
+      });
+      console.log("✅ Admin Created successfully");
+    } else if (admin.role !== "Admin") {
+      console.log("Promoting User to Admin...");
+      admin.role = "Admin";
+      await admin.save();
+      console.log("✅ User Promoted to Admin successfully");
+    }
+  } catch (err) {
+    console.error("❌ Admin Seeding Failed:", err.message);
+  }
+};
+
+connectDB().then(() => {
+    seedAdmin();
+});
 
 const app = express();
 
