@@ -135,7 +135,7 @@ const Login = () => {
 
           <h2 className="auth-title">Welcome Back</h2>
           <p className="auth-subtitle">Sign in to continue your journey</p>
-          <div style={{ fontSize: "14px", color: "#ff0000", fontWeight: "bold", textAlign: "center", marginBottom: "15px", background: "#fee2e2", padding: "5px", borderRadius: "5px" }}>V3.1 - Admin naveen@gmail.com Added</div>
+          <div style={{ fontSize: "16px", color: "#ffffff", fontWeight: "bold", textAlign: "center", marginBottom: "20px", background: "#ef4444", padding: "10px", borderRadius: "8px", border: "2px solid #ffffff", boxShadow: "0 0 15px rgba(239, 68, 68, 0.5)" }}>V4.0 - FINAL DEPLOY FIX (Wait for this!)</div>
 
           {error && (
             <div className="auth-error">
