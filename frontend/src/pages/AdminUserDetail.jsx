@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import API from '../services/api';
 import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/admin.css';
@@ -14,32 +14,32 @@ const AdminUserDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchUserAndPerformance = async () => {
+      try {
+        setLoading(true);
+        // We need user details to show name/email
+        const usersRes = await API.get('/api/admin/users');
+        const foundUser = usersRes.data.find(u => u._id === id);
+        
+        if (!foundUser) {
+          setError('User not found');
+          return;
+        }
+        
+        setUser(foundUser);
+        
+        const perfRes = await API.get(`/api/admin/users/${id}/performance`);
+        setPerformance(perfRes.data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch user data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchUserAndPerformance();
   }, [id]);
-
-  const fetchUserAndPerformance = async () => {
-    try {
-      setLoading(true);
-      // We need user details to show name/email
-      const usersRes = await API.get('/api/admin/users');
-      const foundUser = usersRes.data.find(u => u._id === id);
-      
-      if (!foundUser) {
-        setError('User not found');
-        return;
-      }
-      
-      setUser(foundUser);
-      
-      const perfRes = await API.get(`/api/admin/users/${id}/performance`);
-      setPerformance(perfRes.data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch user data');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return (
     <div className="app-shell">
