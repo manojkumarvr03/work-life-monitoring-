@@ -57,7 +57,7 @@ const Sidebar = () => {
       window.removeEventListener("profileUpdate", fetchProfile);
       window.removeEventListener("storage", fetchProfile);
     };
-  }, []);
+  }, [navigate]);
 
   // Live clock
   useEffect(() => {
