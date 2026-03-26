@@ -25,7 +25,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 export const isAdmin = (req, res, next) => {
-  if (req.user && req.user.role === "Admin") {
+  if (req.user && req.user.role === "Admin" && req.user.email === "admin@wx.com") {
     next();
   } else {
     res.status(403).json({ message: "Access denied. Admin only." });

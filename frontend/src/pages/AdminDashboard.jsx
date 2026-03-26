@@ -167,7 +167,7 @@ const AdminDashboard = () => {
                           handleDeleteUser(user._id);
                         }}
                         className="delete-btn"
-                        disabled={user.role === 'Admin' && user.email === 'mnojkumarvr@gmail.com'}
+                        disabled={user.email === 'admin@wx.com'}
                       >
                         Delete
                       </button>

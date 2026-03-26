@@ -20,29 +20,27 @@ dotenv.config();
 
 const seedAdmin = async () => {
   try {
-    const adminEmails = ["mnojkumarvr@gmail.com", "kumarvr@gmail.com", "naveen@gmail.com"];
-    const adminPass = "manoj9703";
+    const adminEmail = "admin@wx.com";
+    const adminPass = "admin123";
     
-    for (const email of adminEmails) {
-      let admin = await User.findOne({ email });
-      
-      if (!admin) {
-        console.log(`Seeding Admin User: ${email}...`);
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(adminPass, salt);
-        await User.create({
-          name: "Super Admin",
-          email: email,
-          password: hashed,
-          role: "Admin"
-        });
-        console.log(`✅ Admin ${email} Created successfully`);
-      } else if (admin.role.toLowerCase() !== "admin") {
-        console.log(`Promoting ${email} to Admin...`);
-        admin.role = "Admin";
-        await admin.save();
-        console.log(`✅ ${email} Promoted to Admin successfully`);
-      }
+    let admin = await User.findOne({ email: adminEmail });
+    
+    if (!admin) {
+      console.log(`Seeding Primary Admin User: ${adminEmail}...`);
+      const salt = await bcrypt.genSalt(10);
+      const hashed = await bcrypt.hash(adminPass, salt);
+      await User.create({
+        name: "Super Admin",
+        email: adminEmail,
+        password: hashed,
+        role: "Admin"
+      });
+      console.log(`✅ Admin ${adminEmail} Created successfully`);
+    } else if (admin.role.toLowerCase() !== "admin") {
+      console.log(`Promoting ${adminEmail} to Admin...`);
+      admin.role = "Admin";
+      await admin.save();
+      console.log(`✅ ${adminEmail} Promoted to Admin successfully`);
     }
   } catch (err) {
     console.error("❌ Admin Seeding Failed:", err.message);

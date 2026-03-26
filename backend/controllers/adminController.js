@@ -47,9 +47,8 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     
-    if (user.role === "Admin" && req.user._id.toString() !== user._id.toString()) {
-       // Prevent deleting other admins for safety, or allow it with caution
-       // For now, let's allow deleting but maybe add a check
+    if (user.email === "admin@wx.com") {
+        return res.status(403).json({ message: "Cannot delete the primary administrator." });
     }
 
     await User.findByIdAndDelete(req.params.id);
@@ -65,21 +64,24 @@ export const deleteUser = async (req, res) => {
 export const updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
+    
+    const userToUpdate = await User.findById(req.params.id);
+    if (!userToUpdate) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (role === "Admin" && userToUpdate.email !== "admin@wx.com") {
+      return res.status(403).json({ message: "Only admin@wx.com can be an Admin." });
+    }
+
     if (!["Student", "Employee", "Admin"].includes(role)) {
       return res.status(400).json({ message: "Invalid role" });
     }
 
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { role },
-      { new: true }
-    ).select("-password");
+    userToUpdate.role = role;
+    await userToUpdate.save();
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json(user);
+    res.json(userToUpdate);
   } catch (err) {
     res.status(500).json({ message: "Failed to update user role" });
   }

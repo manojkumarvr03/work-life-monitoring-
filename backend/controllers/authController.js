@@ -25,7 +25,7 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password: hashed,
-      role: role || "Student"
+      role: (role === "Admin" && email === "admin@wx.com") ? "Admin" : (role || "Student")
     });
 
     res.status(201).json({ message: "Registration successful" });
