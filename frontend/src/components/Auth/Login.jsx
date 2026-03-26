@@ -49,7 +49,7 @@ const Login = () => {
       }
 
       localStorage.setItem("token", data.token);
-      if (data.user?.role === "Admin") {
+      if (data.user?.role?.toLowerCase() === "admin") {
         navigate("/admin");
       } else {
         navigate("/dashboard");
@@ -74,7 +74,11 @@ const Login = () => {
       if (!res.ok) throw new Error(data.message || "Google login failed");
       
       localStorage.setItem("token", data.token);
-      navigate("/dashboard");
+      if (data.user?.role?.toLowerCase() === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(err.message);
     } finally {

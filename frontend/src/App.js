@@ -19,12 +19,31 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
+import { useEffect, useState } from "react";
+import API from "./services/api";
+
 function App() {
   const isAuth = !!localStorage.getItem("token");
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState("");
   
+  useEffect(() => {
+    if (isAuth) {
+      API.get("/api/auth/profile")
+        .then(res => {
+          const role = (res.data?.user?.role || res.data?.role || "").toLowerCase();
+          setUserRole(role);
+          if (role === "admin" && !location.pathname.startsWith("/admin")) {
+            navigate("/admin");
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isAuth, location.pathname, navigate]);
+
   // Hide Chatbot on admin routes
-  const hideChatbot = location.pathname.startsWith('/admin');
+  const hideChatbot = location.pathname.startsWith('/admin') || userRole === "admin";
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
