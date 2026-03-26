@@ -30,8 +30,17 @@ const Sidebar = () => {
         .then((res) => {
           const user = res.data?.user || res.data;
           setUserName(user?.name || "");
-          setUserRole(user?.role || "Student");
+          const role = user?.role || "Student";
+          setUserRole(role);
           setUserAvatar(user?.avatar || "");
+
+          // REDIRECT ADMINS to the Admin Panel if they land on student pages
+          if (role.toLowerCase() === "admin") {
+            const path = window.location.pathname;
+            if (!path.startsWith("/admin")) {
+              navigate("/admin");
+            }
+          }
         })
         .catch(() => { });
     };
@@ -72,7 +81,7 @@ const Sidebar = () => {
 
   const adminItem = { to: "/admin", icon: <ShieldCheck size={20} />, label: "Admin Panel", badge: "Admin" };
 
-  const displayNavItems = userRole === "Admin" ? [adminItem] : navItems;
+  const displayNavItems = userRole.toLowerCase() === "admin" ? [adminItem] : navItems;
 
   const timeStr = currentTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const dateStr = currentTime.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
