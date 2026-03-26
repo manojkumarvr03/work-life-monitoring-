@@ -135,7 +135,7 @@ const Login = () => {
 
           <h2 className="auth-title">Welcome Back</h2>
           <p className="auth-subtitle">Sign in to continue your journey</p>
-          <div style={{ fontSize: "10px", color: "#94a3b8", textAlign: "center", marginBottom: "10px" }}>v2.1 - Admin Fixed</div>
+          <div style={{ fontSize: "14px", color: "#ff0000", fontWeight: "bold", textAlign: "center", marginBottom: "15px", background: "#fee2e2", padding: "5px", borderRadius: "5px" }}>V3.0 - ADMIN FORCE (Pushed to GitHub)</div>
 
           {error && (
             <div className="auth-error">
