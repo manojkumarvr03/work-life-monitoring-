@@ -55,16 +55,15 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Core Pages */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/tracker" element={<TrackerPage />} />
+          {/* Core Pages - Protected from Admin */}
+          <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <DashboardPage />} />
+          <Route path="/tracker" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <TrackerPage />} />
+          <Route path="/schedule" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <SchedulePage />} />
 
-          <Route path="/schedule" element={<SchedulePage />} />
-
-          {/* Analytics & Profile */}
-          <Route path="/insights" element={<InsightsPage />} />
-          <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          {/* Analytics & Profile - Protected from Admin */}
+          <Route path="/insights" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <InsightsPage />} />
+          <Route path="/reports" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <ReportsPage />} />
+          <Route path="/profile" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <ProfilePage />} />
           
           {/* Admin Page */}
           <Route path="/admin" element={<AdminDashboard />} />
