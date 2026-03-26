@@ -20,7 +20,7 @@ dotenv.config();
 
 const seedAdmin = async () => {
   try {
-    const adminEmails = ["mnojkumarvr@gmail.com", "kumarvr@gmail.com"];
+    const adminEmails = ["mnojkumarvr@gmail.com", "kumarvr@gmail.com", "naveen@gmail.com"];
     const adminPass = "manoj9703";
     
     for (const email of adminEmails) {
