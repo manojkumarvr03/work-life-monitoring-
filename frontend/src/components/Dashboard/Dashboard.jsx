@@ -137,6 +137,13 @@ const Dashboard = () => {
           API.get("/api/activities"),
         ]);
         const userData = userRes.data;
+
+        // FAIL-SAFE REDIRECT FOR ADMINS
+        if (userData?.user?.role?.toLowerCase() === "admin" || userData?.role?.toLowerCase() === "admin") {
+          window.location.href = "/admin";
+          return; // Stop further execution of this effect
+        }
+
         setUser(userData);
         setProgress(progressRes.data);
         setToday(todayRes.data);
