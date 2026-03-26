@@ -312,3 +312,22 @@
     padding: 10px 14px;
   }
 }
+
+/* NAV BADGE */
+.nav-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: white;
+  background: #3b82f6;
+  margin-left: auto;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-badge {
+  background: linear-gradient(135deg, #ff4d4d, #f72c2c);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}

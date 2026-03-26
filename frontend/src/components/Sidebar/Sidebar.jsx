@@ -10,7 +10,8 @@ import {
   LogOut,
   GraduationCap,
   Menu,
-  X
+  X,
+  ShieldCheck
 } from "lucide-react";
 import API from "../../services/api";
 import "./sidebar.css";
@@ -69,6 +70,10 @@ const Sidebar = () => {
     { to: "/profile", icon: <User size={20} />, label: "Profile", badge: null },
   ];
 
+  const adminItem = { to: "/admin", icon: <ShieldCheck size={20} />, label: "Admin Panel", badge: "Admin" };
+
+  const displayNavItems = userRole === "Admin" ? [adminItem] : navItems;
+
   const timeStr = currentTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const dateStr = currentTime.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
 
@@ -106,7 +111,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav className="sidebar-nav">
         <div className="sidebar-section-label">Menu</div>
-        {navItems.map(({ to, icon, label, badge }) => (
+        {displayNavItems.map(({ to, icon, label, badge }) => (
           <NavLink
             key={to}
             to={to}
@@ -115,7 +120,7 @@ const Sidebar = () => {
           >
             <span className="nav-icon">{icon}</span>
             <span className="nav-label">{label}</span>
-            {badge && <span className="nav-badge">{badge}</span>}
+            {badge && <span className={`nav-badge ${badge === "Admin" ? "admin-badge" : ""}`}>{badge}</span>}
           </NavLink>
         ))}
       </nav>

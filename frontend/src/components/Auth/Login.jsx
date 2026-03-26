@@ -49,7 +49,11 @@ const Login = () => {
       }
 
       localStorage.setItem("token", data.token);
-      navigate("/dashboard");
+      if (data.user?.role === "Admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
     } finally {

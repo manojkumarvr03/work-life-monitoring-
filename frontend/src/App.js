@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
@@ -10,6 +10,8 @@ import InsightsPage from "./pages/InsightsPage";
 import ProfilePage from "./pages/ProfilePage";
 
 import SchedulePage from "./pages/SchedulePage";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUserDetail from "./pages/AdminUserDetail";
 import ParticleBackground from "./components/ParticleBackground";
 import ChatAssistant from "./components/ChatAssistant/ChatAssistant";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -19,31 +21,40 @@ import "react-date-range/dist/theme/default.css";
 
 function App() {
   const isAuth = !!localStorage.getItem("token");
+  const location = useLocation();
+  
+  // Hide Chatbot on admin routes
+  const hideChatbot = location.pathname.startsWith('/admin');
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <Router>
-      <ParticleBackground />
-      {isAuth && <ChatAssistant />}
+      <>
+        <ParticleBackground />
+        {isAuth && !hideChatbot && <ChatAssistant />}
 
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Core Pages */}
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/tracker" element={<TrackerPage />} />
+          {/* Core Pages */}
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/tracker" element={<TrackerPage />} />
 
-        <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
 
-
-        {/* Analytics & Profile */}
-        <Route path="/insights" element={<InsightsPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        {/* Catch-all redirect to login for any unknown paths */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+          {/* Analytics & Profile */}
+          <Route path="/insights" element={<InsightsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          
+          {/* Admin Page */}
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/user/:id" element={<AdminUserDetail />} />
+          
+          {/* Catch-all redirect to login for any unknown paths */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </>
     </GoogleOAuthProvider>
   );
 }

@@ -41,6 +41,10 @@ app.use("/api/schedules", scheduleRoutes);
 // Study Planner
 app.use("/api/planner", studyPlannerRoutes);
 
+// Admin Routes
+import adminRoutes from "./routes/adminRoutes.js";
+app.use("/api/admin", adminRoutes);
+
 // Health check
 app.get("/api/health", (req, res) => res.json({ status: "ok", time: new Date().toISOString() }));
 

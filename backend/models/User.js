@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       required: function() { return !this.googleId; } 
     },
     googleId: { type: String, unique: true, sparse: true },
-    role: { type: String, enum: ["Student", "Employee"], default: "Student" },
+    role: { type: String, enum: ["Student", "Employee", "Admin"], default: "Student" },
     avatar: { type: String, default: "" }
   },
   { timestamps: true }
